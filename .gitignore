@@ -1,5 +1,3 @@
-/data/
 /checkpoint/
 /.idea/
-!/data/corpus/glove.6B/
-!/data/corpus/*.txt
+/data/

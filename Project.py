@@ -43,7 +43,7 @@ class Project:
 class GraphConfig:
     window_size = 20
     word_embeddings_dim = 300
-    word_vector_file = 'data/glove.6B/glove.6B.200d.txt'
+    word_vector_file = 'data/glove6B/glove6B.200d.txt'
 
     def __post_init__(self):
         return

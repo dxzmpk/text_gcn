@@ -15,7 +15,7 @@ from utils.utils import *
 from models.gcn import GCN
 from models.mlp import MLP
 
-from Project import train_config
+from Project import project, train_config
 
 
 
