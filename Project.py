@@ -11,10 +11,14 @@ class Project:
     corpus_path = data_dir / 'corpus' / (dataset + '.txt')
     train_test_split_path = data_dir / 'train_val_split' / (dataset + '.txt')
     clean_corpus_path = data_dir / 'corpus/clean' / (dataset + '.clean.txt')
-    shuffle_index_dir = data_dir / 'shuffle/'
+    shuffle_index_dir = data_dir / 'shuffle/' / (dataset + '/')
     vocab_path = data_dir / 'vocab/'
     label_path = data_dir / 'label/'
     graph_dir = data_dir / 'graph' / (dataset + '/')
+
+    dataset_experiment_dir = Path = base_dir / 'experiment' / (dataset + '/')
+    experiment = 'baseline_2'
+    experiment_dir = dataset_experiment_dir / experiment
 
     # checkpoint_dir = base_dir / 'checkpoint'
     # precess_dir = data_dir / 'precess'
@@ -22,7 +26,6 @@ class Project:
     # analysis_dir = data_dir / 'analysis_dir/ohsumed_dependency/'
     # utils_dir = base_dir / 'utils/ohsumed_experiments'
     # experiment_name = 'ohsumed_4W_wA'
-    # file_of_experiment = './data/ohsumed_dependency_clean2/'
 
     def __post_init__(self):
         # create the directory if they does not exist
@@ -31,6 +34,8 @@ class Project:
         self.vocab_path.mkdir(exist_ok=True)
         self.label_path.mkdir(exist_ok=True)
         self.graph_dir.mkdir(exist_ok=True)
+        self.dataset_experiment_dir.mkdir(exist_ok=True)
+        self.experiment_dir.mkdir(exist_ok=True)
 
         # self.checkpoint_dir.mkdir(exist_ok=True)
         # self.precess_dir.mkdir(exist_ok=True)

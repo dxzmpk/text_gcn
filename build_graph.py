@@ -21,21 +21,21 @@ def read_train_test_split():
             temp = line.split("\t")
             if temp[1].find('test') != -1:
                 doc_test_list.append(line.strip())
-                train_id = doc_name_list.index(line.strip())
-                train_ids.append(train_id)
-            elif temp[1].find('train') != -1:
-                doc_train_list.append(line.strip())
                 test_id = doc_name_list.index(line.strip())
                 test_ids.append(test_id)
+            elif temp[1].find('train') != -1:
+                doc_train_list.append(line.strip())
+                train_id = doc_name_list.index(line.strip())
+                train_ids.append(train_id)
 
     random.shuffle(train_ids)
     train_ids_str = '\n'.join(str(index) for index in train_ids)
-    with open(project.shuffle_index_dir / (project.dataset + '.train.id'), 'w') as f:
+    with open(project.shuffle_index_dir / 'train.id', 'w') as f:
         f.write(train_ids_str)
 
     random.shuffle(test_ids)
     test_ids_str = '\n'.join(str(index) for index in test_ids)
-    with open(project.shuffle_index_dir / (project.dataset + '.test.id'), 'w') as f:
+    with open(project.shuffle_index_dir / 'test.id', 'w') as f:
         f.write(test_ids_str)
 
     print("Total Train Doc No. = %s" % len(train_ids))
@@ -62,10 +62,10 @@ def get_shuffle_name_content_list(doc_name_list, doc_content_list, ids):
     shuffle_doc_name_str = '\n'.join(shuffle_doc_name_list)
     shuffle_doc_content_str = '\n'.join(shuffle_doc_content_list)
 
-    with open(project.shuffle_index_dir / (project.dataset + '.name.txt'), 'w') as f:
+    with open(project.shuffle_index_dir / 'name.txt', 'w') as f:
         f.write(shuffle_doc_name_str)
 
-    with open(project.shuffle_index_dir / (project.dataset + '.content.txt'), 'w') as f:
+    with open(project.shuffle_index_dir / 'content.txt', 'w') as f:
         f.write(shuffle_doc_content_str)
 
     return shuffle_doc_name_list, shuffle_doc_content_list
@@ -345,8 +345,9 @@ def split_train_val(train_size, shuffle_doc_name_list):
     real_train_doc_names = shuffle_doc_name_list[:real_train_size]
     real_train_doc_names_str = '\n'.join(real_train_doc_names)
 
-    with open(project.shuffle_index_dir / (project.dataset + '.real_train.name'), 'w') as f:
+    with open(project.shuffle_index_dir / 'real_train.name', 'w') as f:
         f.write(real_train_doc_names_str)
+    return real_train_size
 
 
 def main():
@@ -359,11 +360,10 @@ def main():
 
     # 拆分训练集和验证集
     train_size = len(train_ids)
-    split_train_val(train_size, shuffle_doc_name_list)
-
+    real_train_size = split_train_val(train_size, shuffle_doc_name_list)
     # 构建文档特征矩阵
     label_list = get_label_list(shuffle_doc_name_list)
-    x, y = get_xy(train_size, label_list, shuffle_doc_name_list, 0)
+    x, y = get_xy(real_train_size, label_list, shuffle_doc_name_list, 0)
     test_size = len(test_ids)
     tx, ty = get_xy(test_size, label_list, shuffle_doc_name_list, train_size)
 
