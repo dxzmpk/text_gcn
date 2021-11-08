@@ -126,6 +126,7 @@ def store_word_doc_vectors(gcn, train_size, test_size, adj):
 
 
 def main():
+
     seed = 2021
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -149,6 +150,7 @@ def main():
               .format(test_loss, test_acc, test_duration))
     print_test_result(test_mask, pred, labels)
     store_word_doc_vectors(gcn, train_size, test_size, adj)
+    print_log('当前实验目录为：' + str(project.experiment_dir))
 
 
 if __name__ == '__main__':

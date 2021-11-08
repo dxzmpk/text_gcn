@@ -1,7 +1,7 @@
 from nltk.corpus import stopwords
 from Project import project, graph_config
 from utils.utils import clean_str, load_word2vec
-
+import jieba
 
 # Read Word Vectors
 def read_word_vectors():
@@ -20,8 +20,12 @@ def read_corpus():
 def cal_word_freq(doc_content_list):
     word_freq = {}
     for doc_content in doc_content_list:
-        sentence = clean_str(doc_content)
-        words = sentence.split()
+        words = []
+        if (project.language == 'english'):
+            sentence = clean_str(doc_content)
+            words = sentence.split()
+        elif (project.language == 'chinese'):
+            words = jieba.cut(str)
         for word in words:
             if word in word_freq:
                 word_freq[word] += 1
@@ -31,7 +35,7 @@ def cal_word_freq(doc_content_list):
 
 
 def remove_stop_rare(doc_content_list, word_freq):
-    stop_words = set(stopwords.words('english'))
+    stop_words = set(stopwords.words(project.language))
     print(stop_words)
     clean_docs = []
     for doc_content in doc_content_list:
