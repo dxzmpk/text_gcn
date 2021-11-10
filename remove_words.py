@@ -1,7 +1,8 @@
 from nltk.corpus import stopwords
 from Project import project, graph_config
-from utils.utils import clean_str, load_word2vec
+from utils import clean_str, load_word2vec
 import jieba
+
 
 # Read Word Vectors
 def read_word_vectors():
@@ -13,7 +14,10 @@ def read_corpus():
     doc_content_list = []
     with open(project.corpus_path, 'rb') as f:
         for line in f.readlines():
-            doc_content_list.append(line.strip().decode('latin1'))
+            if project.language == project.ENGLISH:
+                doc_content_list.append(line.strip().decode('latin1'))
+            elif project.language == project.CHINESE:
+                doc_content_list.append(line.strip().decode('utf-8'))
     return doc_content_list
 
 
@@ -21,11 +25,11 @@ def cal_word_freq(doc_content_list):
     word_freq = {}
     for doc_content in doc_content_list:
         words = []
-        if (project.language == 'english'):
+        if project.language == project.ENGLISH:
             sentence = clean_str(doc_content)
             words = sentence.split()
-        elif (project.language == 'chinese'):
-            words = jieba.cut(str)
+        elif project.language == project.CHINESE:
+            words = jieba.lcut(doc_content)
         for word in words:
             if word in word_freq:
                 word_freq[word] += 1
@@ -35,12 +39,18 @@ def cal_word_freq(doc_content_list):
 
 
 def remove_stop_rare(doc_content_list, word_freq):
-    stop_words = set(stopwords.words(project.language))
-    print(stop_words)
+    stop_words = ""
+    if project.language == project.ENGLISH:
+        stop_words = set(stopwords.words(project.language))
+    print("stop_words = " + stop_words)
     clean_docs = []
     for doc_content in doc_content_list:
-        sentence = clean_str(doc_content)
-        words = sentence.split()
+        words = []
+        if project.language == project.ENGLISH:
+            sentence = clean_str(doc_content)
+            words = sentence.split()
+        elif project.language == project.CHINESE:
+            words = jieba.lcut(doc_content)
         doc_words = []
         for word in words:
             # word not in stop_words and word_freq[word] >= 5
@@ -59,7 +69,7 @@ def corpus_statics(clean_corpus_name):
     aver_len = 0
     max_len = 0
 
-    with open(clean_corpus_name, 'r') as f:
+    with open(clean_corpus_name, 'r', encoding="utf-8") as f:
         lines = f.readlines()
         for line in lines:
             line = line.strip()
@@ -83,7 +93,7 @@ def read_clean_save_statics():
     clean_docs = remove_stop_rare(doc_content_list, word_freq)
 
     clean_corpus_str = '\n'.join(clean_docs)
-    with open(project.clean_corpus_path, 'w') as f:
+    with open(project.clean_corpus_path, 'w', encoding='utf-8') as f:
         f.write(clean_corpus_str)
     corpus_statics(project.clean_corpus_path)
 

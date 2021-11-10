@@ -14,7 +14,7 @@ def read_train_test_split():
     train_ids = []
     test_ids = []
 
-    with open(project.train_test_split_path, 'r') as f:
+    with open(project.train_test_split_path, 'r', encoding='utf-8') as f:
         lines = f.readlines()
         for line in lines:
             doc_name_list.append(line.strip())
@@ -30,12 +30,12 @@ def read_train_test_split():
 
     random.shuffle(train_ids)
     train_ids_str = '\n'.join(str(index) for index in train_ids)
-    with open(project.shuffle_index_dir / 'train.id', 'w') as f:
+    with open(project.shuffle_index_dir / 'train.id', 'w', encoding='utf-8') as f:
         f.write(train_ids_str)
 
     random.shuffle(test_ids)
     test_ids_str = '\n'.join(str(index) for index in test_ids)
-    with open(project.shuffle_index_dir / 'test.id', 'w') as f:
+    with open(project.shuffle_index_dir / 'test.id', 'w', encoding='utf-8') as f:
         f.write(test_ids_str)
 
     print("Total Train Doc No. = %s" % len(train_ids))
@@ -46,7 +46,7 @@ def read_train_test_split():
 
 def read_content_list():
     doc_content_list = []
-    with open(project.clean_corpus_path, 'r') as f:
+    with open(project.clean_corpus_path, 'r', encoding='utf-8') as f:
         lines = f.readlines()
         for line in lines:
             doc_content_list.append(line.strip())
@@ -62,10 +62,10 @@ def get_shuffle_name_content_list(doc_name_list, doc_content_list, ids):
     shuffle_doc_name_str = '\n'.join(shuffle_doc_name_list)
     shuffle_doc_content_str = '\n'.join(shuffle_doc_content_list)
 
-    with open(project.shuffle_index_dir / 'name.txt', 'w') as f:
+    with open(project.shuffle_index_dir / 'name.txt', 'w', encoding='utf-8') as f:
         f.write(shuffle_doc_name_str)
 
-    with open(project.shuffle_index_dir / 'content.txt', 'w') as f:
+    with open(project.shuffle_index_dir / 'content.txt', 'w', encoding='utf-8') as f:
         f.write(shuffle_doc_content_str)
 
     return shuffle_doc_name_list, shuffle_doc_content_list
@@ -89,7 +89,7 @@ def get_freq_vocab(shuffle_doc_content_list):
 
     vocab_str = '\n'.join(vocab)
 
-    with open(project.vocab_path / (project.dataset + '.txt'), 'w') as f:
+    with open(project.vocab_path / (project.dataset + '.txt'), 'w', encoding='utf-8') as f:
         f.write(vocab_str)
 
     print("Vocab Size = %s" % len(vocab))
@@ -128,7 +128,7 @@ def get_label_list(shuffle_doc_name_list):
     label_list = list(label_set)
 
     label_list_str = '\n'.join(label_list)
-    with open(project.label_path / (project.dataset + '.txt'), 'w') as f:
+    with open(project.label_path / (project.dataset + '.txt'), 'w', encoding='utf-8') as f:
         f.write(label_list_str)
     return label_list
 
@@ -345,7 +345,7 @@ def split_train_val(train_size, shuffle_doc_name_list):
     real_train_doc_names = shuffle_doc_name_list[:real_train_size]
     real_train_doc_names_str = '\n'.join(real_train_doc_names)
 
-    with open(project.shuffle_index_dir / 'real_train.name', 'w') as f:
+    with open(project.shuffle_index_dir / 'real_train.name', 'w', encoding='utf-8') as f:
         f.write(real_train_doc_names_str)
     return real_train_size
 

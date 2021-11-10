@@ -92,7 +92,7 @@ def store_word_doc_vectors(gcn, train_size, test_size, adj):
     train_doc_embeddings = tmp[:train_size]  # include val docs
     test_doc_embeddings = tmp[adj.shape[0] - test_size:]
 
-    with open(project.vocab_path / (project.dataset + '.txt'), 'r') as f:
+    with open(project.vocab_path / (project.dataset + '.txt'), 'r', encoding='utf-8') as f:
         words = f.readlines()
 
     vocab_size = len(words)
@@ -103,7 +103,7 @@ def store_word_doc_vectors(gcn, train_size, test_size, adj):
         word_vector_str = ' '.join([str(x) for x in word_vector])
         word_vectors.append(word + ' ' + word_vector_str)
     word_embeddings_str = '\n'.join(word_vectors)
-    with open(project.experiment_dir / 'word_vectors.txt', 'w') as f:
+    with open(project.experiment_dir / 'word_vectors.txt', 'w', encoding='utf-8') as f:
         f.write(word_embeddings_str)
 
     doc_vectors = []
@@ -121,7 +121,7 @@ def store_word_doc_vectors(gcn, train_size, test_size, adj):
         doc_id += 1
 
     doc_embeddings_str = '\n'.join(doc_vectors)
-    with open(project.experiment_dir / 'doc_vectors.txt', 'w') as f:
+    with open(project.experiment_dir / 'doc_vectors.txt', 'w', encoding='utf-8') as f:
         f.write(doc_embeddings_str)
 
 

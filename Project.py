@@ -4,7 +4,7 @@ from pathlib import Path
 
 @dataclass
 class Project:
-    dataset = 'R8' # name of the dataset
+    dataset = 'pub_opinion'  # name of the dataset
     base_dir: Path = Path(__file__).parents[0]
     data_dir = base_dir / 'data'
 
@@ -15,10 +15,12 @@ class Project:
     vocab_path = data_dir / 'vocab/'
     label_path = data_dir / 'label/'
     graph_dir = data_dir / 'graph' / (dataset + '/')
-    language = 'chinese' # english, chinese
+    ENGLISH = 'english'
+    CHINESE = 'chinese'
+    language = CHINESE
 
     dataset_experiment_dir = Path = base_dir / 'experiment' / (dataset + '/')
-    experiment = 'baseline_2'
+    experiment = 'baseline'
     experiment_dir = dataset_experiment_dir / experiment
 
     def __post_init__(self):
