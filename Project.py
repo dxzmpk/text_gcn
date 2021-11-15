@@ -11,6 +11,7 @@ class Project:
     corpus_path = data_dir / 'corpus' / (dataset + '.txt')
     train_test_split_path = data_dir / 'train_val_split' / (dataset + '.txt')
     clean_corpus_path = data_dir / 'corpus/clean' / (dataset + '.clean.txt')
+    predict_path = data_dir / 'predict' / (dataset + '.txt')
     shuffle_index_dir = data_dir / 'shuffle/' / (dataset + '/')
     vocab_path = data_dir / 'vocab/'
     label_path = data_dir / 'label/'
@@ -20,7 +21,7 @@ class Project:
     language = CHINESE
 
     dataset_experiment_dir = Path = base_dir / 'experiment' / (dataset + '/')
-    experiment = 'baseline'
+    experiment = 'simple_adj'
     experiment_dir = dataset_experiment_dir / experiment
 
     def __post_init__(self):
@@ -48,7 +49,7 @@ class GraphConfig:
 class TrainConfig:
     model = 'gcn'  # 'gcn', 'gcn_22232cheby', 'dense'
     learning_rate = 0.02  # Initial learning rate.
-    epochs = 200  # Number of epochs to train.
+    epochs = 300  # Number of epochs to train.
     hidden1 = 200  # Number of units in hidden layer 1.
     dropout = 0.5  # Dropout rate (1 - keep probability).
     weight_decay = 0.  # Weight for L2 loss on embedding matrix.

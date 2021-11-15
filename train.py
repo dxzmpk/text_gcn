@@ -9,6 +9,7 @@ from sklearn import metrics
 from Project import *
 from models.gcn import GCN
 from utils import *
+from build_vector_predict import generate_predict_adj
 
 
 def trans2tensor(xy_info):
@@ -135,10 +136,16 @@ def main():
     adj, features, y_train, y_val, y_test, train_mask, val_mask, test_mask, train_size, test_size = load_corpus(
     )
 
+
     features = sp.identity(features.shape[0])
 
     features = preprocess_features(features)
-    support = [preprocess_adj(adj)]
+
+    if project.experiment == 'baseline':
+        support = [preprocess_adj(adj)]
+    elif project.experiment == 'simple_adj':
+        support = [(adj + sp.eye(adj.shape[0])).A]
+
     gcn = GCN(input_dim=features.shape[0], support=torch.tensor(support, dtype=torch.float32),
               num_classes=y_train.shape[1])
 
@@ -151,6 +158,13 @@ def main():
     print_test_result(test_mask, pred, labels)
     store_word_doc_vectors(gcn, train_size, test_size, adj)
     print_log('当前实验目录为：' + str(project.experiment_dir))
+
+
+def predict(new_string):
+    print_log("Generating prediction adj data")
+    predict_code_list = generate_predict_adj()
+    # gcn = GCN(input_dim=predict_code_list.shape[0], support=torch.tensor(support, dtype=torch.float32),
+    #           num_classes=y_train.shape[1])
 
 
 if __name__ == '__main__':

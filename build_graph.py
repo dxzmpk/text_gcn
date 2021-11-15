@@ -28,12 +28,12 @@ def read_train_test_split():
                 train_id = doc_name_list.index(line.strip())
                 train_ids.append(train_id)
 
-    random.shuffle(train_ids)
+    # random.shuffle(train_ids)
     train_ids_str = '\n'.join(str(index) for index in train_ids)
     with open(project.shuffle_index_dir / 'train.id', 'w', encoding='utf-8') as f:
         f.write(train_ids_str)
 
-    random.shuffle(test_ids)
+    # random.shuffle(test_ids)
     test_ids_str = '\n'.join(str(index) for index in test_ids)
     with open(project.shuffle_index_dir / 'test.id', 'w', encoding='utf-8') as f:
         f.write(test_ids_str)
