@@ -53,6 +53,15 @@ def read_content_list():
     return doc_content_list
 
 
+def read_label_list():
+    label_list = []
+    with open(project.label_path / (project.dataset + '.txt'), 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+        for line in lines:
+            label_list.append(line.strip())
+    return label_list
+
+
 def get_shuffle_name_content_list(doc_name_list, doc_content_list, ids):
     shuffle_doc_name_list = []
     shuffle_doc_content_list = []

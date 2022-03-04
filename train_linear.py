@@ -9,9 +9,9 @@ from sklearn import metrics
 from Project import *
 from build_graph import read_label_list
 from models.gcn import GCN, GraphConvolution
+from models.mlp import MLP
 from utils import *
 from build_vector_predict import generate_predict_adj
-from models.mlp import MLP
 
 
 def trans2tensor(xy_info):
@@ -66,8 +66,7 @@ def train(gcn, xy_info, val_mask, criterion):
         trans2tensor(xy_info)
 
     optimizer = torch.optim.Adam(gcn.parameters(), lr=train_config.learning_rate)
-    epoch = 0
-    loss = 0
+
     for epoch in range(train_config.epochs):
         t = time.time()
         # Forward pass
@@ -90,13 +89,12 @@ def train(gcn, xy_info, val_mask, criterion):
                 val_losses[-(train_config.early_stopping + 1):-1]):
             print_log("Early stopping...")
             break
-    if project.experiment == project.ADJ_BASELINE or project.experiment == project.ADJ_SIMPLE:
-        torch.save({
-            'epoch': epoch,
-            'model_state_dict': gcn.layer2.state_dict(),
-            'optimizer_state_dict': optimizer.state_dict(),
-            'loss': loss,
-        }, project.experiment_dir / 'checkpoint.ck')
+    # torch.save({
+    #     'epoch': epoch,
+    #     'model_state_dict': gcn.layer2.state_dict(),
+    #     'optimizer_state_dict': optimizer.state_dict(),
+    #     'loss': loss,
+    # }, project.experiment_dir / 'checkpoint.ck')
     print_log("Optimization Finished!")
     return t_features, t_y_test
 
@@ -154,33 +152,20 @@ def main():
     adj, features, y_train, y_val, y_test, train_mask, val_mask, test_mask, train_size, test_size = load_corpus(
     )
 
-    features = sp.identity(features.shape[0])
+    features = np.identity(features.shape[0])
 
-    features = preprocess_features(features)
+    # features = preprocess_features(features)
 
-    if project.experiment == project.ADJ_SIMPLE:
-        support = [(adj + sp.eye(adj.shape[0])).A]
-    elif project.experiment == project.ADJ_BASELINE:
-        support = [preprocess_adj(adj)]
-
-    model_func = None
-    if project.experiment == project.LINEAR:
-        model_func = MLP(input_dim=features.shape[0], dropout_rate=0, num_classes=y_train.shape[1])
-    elif project.experiment == project.ADJ_SIMPLE or project.experiment == project.ADJ_SIMPLE:
-        model_func = GCN(input_dim=features.shape[0], support=torch.tensor(support, dtype=torch.float32),
-                         num_classes=y_train.shape[1])
+    mlp = MLP(input_dim=features.shape[0], dropout_rate=0, num_classes=y_train.shape[1])
 
     criterion = nn.CrossEntropyLoss()
-    t_features, t_y_test = train(model_func, [features, y_train, y_val, y_test, train_mask, y_train], val_mask,
-                                 criterion)
+    t_features, t_y_test = train(mlp, [features, y_train, y_val, y_test, train_mask, y_train], val_mask, criterion)
 
-    test_loss, test_acc, pred, labels, test_duration = evaluate(model_func, t_features, t_y_test, test_mask, criterion)
+    test_loss, test_acc, pred, labels, test_duration = evaluate(mlp, t_features, t_y_test, test_mask, criterion)
     print_log("Test set results: \n\t loss= {:.5f}, accuracy= {:.5f}, time= {:.5f}"
               .format(test_loss, test_acc, test_duration))
     print_test_result(test_mask, pred, labels)
-
-    if project.experiment == project.ADJ_BASELINE or project.experiment == project.ADJ_SIMPLE:
-        store_word_doc_vectors(model_func, train_size, test_size, adj)
+    # store_word_doc_vectors(mlp, train_size, test_size, adj)
     print_log('当前实验目录为：' + str(project.experiment_dir))
 
 

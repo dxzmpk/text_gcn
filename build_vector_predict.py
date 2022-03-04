@@ -76,12 +76,13 @@ def get_tf_idf(new_string_list, doc_content_list, doc_word_freq, word_doc_freq, 
     for i in tqdm(range(len(new_string_list)), 'insert_tf_idf'):
         doc_words = new_string_list[i]
         words = jieba.lcut(doc_words)
+        print(str(words))
         doc_word_set = set()
         for word in words:
             if word in doc_word_set:
                 continue
             # To make sure the word is in the vocabulary
-            if word not in word_id_map:
+            if word not in word_id_map or word not in word_doc_freq:
                 continue
             j = word_id_map[word]
             key = str(i) + ',' + str(j)
@@ -152,7 +153,7 @@ def generate_predict_adj():
     '''
     adj = build_graph(new_string_list, doc_content_list, train_size, test_size, [vocab, word_id_map, vocab_size])
     new_string_list_code = adj.toarray(order=None, out=None)
-    print(new_string_list_code)
+    return new_string_list_code
 
 
 if __name__ == '__main__':

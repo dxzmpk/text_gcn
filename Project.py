@@ -21,7 +21,12 @@ class Project:
     language = CHINESE
 
     dataset_experiment_dir = Path = base_dir / 'experiment' / (dataset + '/')
-    experiment = 'simple_adj'
+
+    ADJ_SIMPLE = 'simple_adj'
+    ADJ_BASELINE = 'baseline'
+    LINEAR = 'linear'
+    experiment = LINEAR  # simple_adj代表adj不经过预处理
+
     experiment_dir = dataset_experiment_dir / experiment
 
     def __post_init__(self):
@@ -39,7 +44,7 @@ class Project:
 class GraphConfig:
     window_size = 20
     word_embeddings_dim = 300
-    word_vector_file = 'data/glove6B/glove6B.200d.txt'
+    word_vector_file = 'data/corpus/glove6B/glove6B.300d.txt'
 
     def __post_init__(self):
         return
@@ -49,7 +54,7 @@ class GraphConfig:
 class TrainConfig:
     model = 'gcn'  # 'gcn', 'gcn_22232cheby', 'dense'
     learning_rate = 0.02  # Initial learning rate.
-    epochs = 300  # Number of epochs to train.
+    epochs = 200  # Number of epochs to train.
     hidden1 = 200  # Number of units in hidden layer 1.
     dropout = 0.5  # Dropout rate (1 - keep probability).
     weight_decay = 0.  # Weight for L2 loss on embedding matrix.

@@ -9,23 +9,25 @@ class GraphConvolution(nn.Module):
         self.support = support
         self.featureless = featureless
 
-        for i in range(len(self.support)):
-            setattr(self, 'W{}'.format(i), nn.Parameter(torch.randn(input_dim, output_dim)))
+        # for i in range(len(self.support)):
+        #     setattr(self, 'W{}'.format(i), nn.Parameter(torch.randn(input_dim, output_dim)))
+        self.W = nn.Parameter(torch.randn(input_dim, output_dim).float())
 
         if bias:
-            self.b = nn.Parameter(torch.zeros(1, output_dim))
+            self.b = nn.Parameter(torch.zeros(1, output_dim).float())
 
         self.act_func = act_func
         self.dropout = nn.Dropout(dropout_rate)
 
     def forward(self, x):
+        out = []
         x = self.dropout(x)
 
         for i in range(len(self.support)):
             if self.featureless:
-                pre_sup = getattr(self, 'W{}'.format(i))
+                pre_sup = self.W
             else:
-                pre_sup = x.mm(getattr(self, 'W{}'.format(i)))
+                pre_sup = x.mm(self.W)
 
             if i == 0:
                 out = self.support[i].mm(pre_sup)
